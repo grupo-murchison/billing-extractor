@@ -1,6 +1,6 @@
 {
   "name": "billing-extractor",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "API REST - Billing extractor",
   "author": "",
   "private": true,
