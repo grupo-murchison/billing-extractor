@@ -124,7 +124,7 @@ export class TaskService {
     return {
       calculoContratoId: proforma.contratos[0].id,
       calculoCabeceraId: proforma.id,
-      periodoId: proforma.contratos[0].periodoId,
+      periodoId: proforma.contratos[0].periodo.id,
       estado: 'ENVIADO',
     };
   }
