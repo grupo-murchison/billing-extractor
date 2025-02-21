@@ -91,7 +91,7 @@ export class TaskService {
         observaciones: null, // VALOR FIJO
         adjunto: 'RUTA PENDIENTE', //TODO todavia no tenemos la ruta al servidor
         procesado: false, // VALOR FIJO
-        empresa: 'NULL', // VALOR FIJO //TODO se pasa "NULL" hasta que en la tabla admita null
+        empresa: proforma.contratos[0].contrato?.sociedad?.conceptoBusqueda,
         moduloComprobante: null, // VALOR FIJO
         codigoComprobante: null, // VALOR FIJO
         numeroComprobante: null, // VALOR FIJO
