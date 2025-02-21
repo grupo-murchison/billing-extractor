@@ -10,6 +10,7 @@
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "node dist/main",
+    "dev": "nest start --watch",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
@@ -30,7 +31,6 @@
     "@nestjs/schedule": "^4.1.1",
     "@nestjs/swagger": "^8.0.3",
     "@nestjs/typeorm": "^10.0.2",
-    "billing-entities": "^0.0.4",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0"
