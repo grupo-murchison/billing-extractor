@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { DatabaseService } from './database.service';
 import { SoftlandGatewayService } from './softland-gateway.service';
+import { ConfigService } from '@nestjs/config';
 
 // interface Proforma {
 //   id: number;
@@ -36,6 +37,8 @@ export class TaskService {
   constructor(
     private readonly databaseService: DatabaseService,
     private readonly softlandGatewayService: SoftlandGatewayService,
+    private configService: ConfigService,
+    
   ) {}
 
   @Cron('*/1 * * * *') // Ejecuta cada minuto
@@ -75,15 +78,8 @@ export class TaskService {
     return proforma;
   }
 
-  private mapProformaToSoftland(proforma: any, tituloCsv: string) {
-    const env = process.env.NODE_ENV;
-    let rutaBase = '';
-  
-    if (env === 'test') {
-      rutaBase = '\\\\192.168.10.6\\IntegracionesQA\\billing\\reports\\soporte\\';
-    } else if (env === 'production') {
-      rutaBase = '\\\\192.168.10.6\\Integraciones\\billing\\reports\\soporte\\';
-    }
+  private mapProformaToSoftland(proforma: any, tituloCsv: string) {  
+    let rutaBase = this.configService.get('URL_CSV_SOPORTE_PROFORMA');
 
     return {
       header: {
