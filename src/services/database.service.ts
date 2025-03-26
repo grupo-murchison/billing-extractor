@@ -3,6 +3,8 @@ import { BadRequestException, Injectable, InternalServerErrorException, Logger }
 import { ConfigService } from '@nestjs/config';
 import { catchError, lastValueFrom, of,map,  } from 'rxjs';
 import { AxiosResponse ,AxiosRequestConfig} from 'axios';
+import { join } from 'path';
+import { writeFileSync } from 'fs';
 
 
 
@@ -72,4 +74,26 @@ export class DatabaseService {
       }
     }
   }
+
+  async exportarCsvSoporteProforma(calculoContratoId: number, tituloCsv: string) {
+    const url = this.baseUrl + this.configService.get('BS_EXPORT_CSV_SOPORTE_PROFORMA') + calculoContratoId;
+
+    let config = { ...this.axiosConfig };
+
+    try {
+        const response: AxiosResponse = await lastValueFrom(
+            this.httpService.get(url, config), 
+        );
+        const dirPath = join(process.cwd(), 'mnt', 'data', 'billing', 'reports', 'soporte');
+        const filePath = join(dirPath, tituloCsv);
+        writeFileSync(filePath, response.data);
+
+        this.logger.log(`Archivo CSV guardado en: ${filePath}`);
+        this.logger.log('CSV generado correctamente:', response.data);
+    } catch (err) {
+        this.logger.error('Error al exportar CSV de soporte proforma:', err);
+    }
+  }
+
+
 }
