@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { DatabaseService } from './database.service';
 import { SoftlandGatewayService } from './softland-gateway.service';
+import { ConfigService } from '@nestjs/config';
 
 // interface Proforma {
 //   id: number;
@@ -36,6 +37,8 @@ export class TaskService {
   constructor(
     private readonly databaseService: DatabaseService,
     private readonly softlandGatewayService: SoftlandGatewayService,
+    private configService: ConfigService,
+    
   ) {}
 
   @Cron('*/1 * * * *') // Ejecuta cada minuto
@@ -48,12 +51,13 @@ export class TaskService {
     try {
       const proforma = await this.getProformaPendiente();
       if (!proforma) return;
-
-      const proformaToSoftland = this.mapProformaToSoftland(proforma);
-
+      const calculoCabeceraId = proforma.id;
+      const tituloCsv = `soporte_calculoCabeceraId_${calculoCabeceraId}.csv`;
+      const proformaToSoftland = this.mapProformaToSoftland(proforma, tituloCsv);
+      await this.databaseService.exportarCsvSoporteProforma(calculoCabeceraId, tituloCsv)
       await this.enviarProformaASoftland(proformaToSoftland);
 
-      const payload = this.crearPayloadActualizacion(proforma);
+      const payload = this.crearPayloadActualizacion(proforma, tituloCsv);
       await this.actualizarEstadoProforma(payload);
     } catch (err) {
       this.logger.error(
@@ -74,7 +78,9 @@ export class TaskService {
     return proforma;
   }
 
-  private mapProformaToSoftland(proforma: any) {
+  private mapProformaToSoftland(proforma: any, tituloCsv: string) {  
+    let rutaBase = this.configService.get('URL_CSV_SOPORTE_PROFORMA');
+
     return {
       header: {
         numeroSecuencia: proforma.numeroSecuenciaCalculo,
@@ -89,7 +95,7 @@ export class TaskService {
         moneda:
           proforma.contratos[0].conceptos[0]?.procedimientoP.moneda.codigo,
         observaciones: null, // VALOR FIJO
-        adjunto: 'RUTA PENDIENTE', //TODO todavia no tenemos la ruta al servidor
+        adjunto: `${rutaBase}${tituloCsv}`,
         procesado: false, // VALOR FIJO
         empresa: proforma.contratos[0].contrato?.sociedad?.conceptoBusqueda,
         moduloComprobante: null, // VALOR FIJO
@@ -120,12 +126,13 @@ export class TaskService {
     }
   }
 
-  private crearPayloadActualizacion(proforma: any) {
+  private crearPayloadActualizacion(proforma: any, tituloCsv: string) {
     return {
       calculoContratoId: proforma.contratos[0].id,
       calculoCabeceraId: proforma.id,
       periodoId: proforma.contratos[0].periodo.id,
       estado: 'ENVIADO',
+      tituloCsv: tituloCsv
     };
   }
 
