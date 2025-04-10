@@ -84,7 +84,7 @@ export class DatabaseService {
         const response: AxiosResponse = await lastValueFrom(
             this.httpService.get(url, config), 
         );
-        const isServer = process.env.NODE === 'test' || process.env.NODE === 'production';
+        const isServer = process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'production';
         
         const dirPath = isServer ? this.configService.get('DOWNLOAD_FOLDER_SOPORTE') : join(process.cwd(), this.configService.get('DOWNLOAD_FOLDER_SOPORTE')) ;
         const filePath = join(dirPath, tituloCsv);
