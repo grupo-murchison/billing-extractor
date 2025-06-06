@@ -7,11 +7,15 @@ import { DatabaseService } from './services/database.service';
 import { SoftlandGatewayService } from './services/softland-gateway.service';
 import { TaskService } from './services/task.service';
 import { ScheduleModule } from '@nestjs/schedule';
+import * as https from 'https';
 
 @Module({
   imports: [
     HttpModule.register({
       timeout: 5000,
+      httpsAgent: new https.Agent({
+        rejectUnauthorized: false, 
+      }),
     }),
 
     ConfigModule.forRoot({
