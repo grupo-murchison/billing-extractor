@@ -95,7 +95,7 @@ export class TaskService {
         moneda:
           proforma.contratos[0].conceptos[0]?.procedimientoP.moneda.codigo,
         observaciones: null, // VALOR FIJO
-        adjunto: `${rutaBase}${tituloCsv}`,
+        adjunto: rutaBase.replace(/[\\\/]$/, '') + '\\' + tituloCsv,
         procesado: false, // VALOR FIJO
         empresa: proforma.contratos[0].contrato?.sociedad?.conceptoBusqueda,
         moduloComprobante: null, // VALOR FIJO
