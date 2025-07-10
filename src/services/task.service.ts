@@ -3,7 +3,6 @@ import { Cron } from '@nestjs/schedule';
 import { DatabaseService } from './database.service';
 import { SoftlandGatewayService } from './softland-gateway.service';
 import { ConfigService } from '@nestjs/config';
-import path from 'path';
 
 // interface Proforma {
 //   id: number;
