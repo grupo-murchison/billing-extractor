@@ -3,6 +3,7 @@ import { Cron } from '@nestjs/schedule';
 import { DatabaseService } from './database.service';
 import { SoftlandGatewayService } from './softland-gateway.service';
 import { ConfigService } from '@nestjs/config';
+import path from 'path';
 
 // interface Proforma {
 //   id: number;
@@ -95,7 +96,7 @@ export class TaskService {
         moneda:
           proforma.contratos[0].conceptos[0]?.procedimientoP.moneda.codigo,
         observaciones: null, // VALOR FIJO
-        adjunto: `${rutaBase}${tituloCsv}`,
+        adjunto: rutaBase.replace(/[\\\/]$/, '') + '\\' + tituloCsv,
         procesado: false, // VALOR FIJO
         empresa: proforma.contratos[0].contrato?.sociedad?.conceptoBusqueda,
         moduloComprobante: null, // VALOR FIJO
