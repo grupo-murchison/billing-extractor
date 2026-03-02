@@ -12,7 +12,7 @@ import { writeFileSync } from 'fs';
 export class DatabaseService {
   private readonly logger = new Logger(DatabaseService.name);
 
-  private baseUrl: string = this.configService.get('BS_BASE_URL');
+  private baseUrl: string;
 
   private axiosConfig: AxiosRequestConfig = {
     headers: { Authorization: `` },
@@ -25,6 +25,11 @@ export class DatabaseService {
   ) {
     const token = '';
     this.axiosConfig.headers = { Authorization: `Bearer ${token}` };
+    this.baseUrl = this.configService.get<string>('BS_BASE_URL');
+
+    if (!this.baseUrl) {
+      throw new Error('BS_BASE_URL no está definida');
+    }
   }
 
   getProformaPendienteDeEnvio = async () => {
