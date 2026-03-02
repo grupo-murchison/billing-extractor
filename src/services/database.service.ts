@@ -51,30 +51,30 @@ export class DatabaseService {
   //     ),
   //   );
   // };
-  getProformaPendienteDeEnvio = async () => {
+getProformaPendienteDeEnvio = async () => {
   const path = this.configService.get<string>('BS_PROFORMA_PENDIENTE_DE_ENVIO');
   const url = `${this.baseUrl}${path}`;
 
-  console.log('🔹 URL que se va a llamar:', url);
-  console.log('🔹 Config usada:', this.axiosConfig);
+  this.logger.log(`URL que se va a llamar: ${url}`);
+  this.logger.log(`Config usada: ${JSON.stringify(this.axiosConfig)}`);
 
   const config = { ...this.axiosConfig };
 
   return lastValueFrom(
     this.httpService.get(url, config).pipe(
       map((axiosResponse: AxiosResponse) => {
-        console.log('Respuesta HTTP status:', axiosResponse.status);
-        console.log('Headers recibidos:', axiosResponse.headers);
-        console.log('Datos recibidos:', axiosResponse.data);
+        this.logger.log(`Respuesta HTTP status: ${axiosResponse.status}`);
+        this.logger.log(`Headers recibidos: ${JSON.stringify(axiosResponse.headers)}`);
+        this.logger.log(`Datos recibidos: ${JSON.stringify(axiosResponse.data)}`);
         return axiosResponse.data;
       }),
       catchError((err) => {
-        console.error('Error en getProformaPendienteDeEnvio');
-        console.error('Message:', err.message);
-        console.error('Code:', err.code);
-        console.error('Response data:', err.response?.data);
-        console.error('Response status:', err.response?.status);
-        console.error('Config usada en la petición:', err.config);
+        this.logger.error('Error en getProformaPendienteDeEnvio');
+        this.logger.error(`Message: ${err.message}`);
+        this.logger.error(`Code: ${err.code}`);
+        this.logger.error(`Response data: ${JSON.stringify(err.response?.data)}`);
+        this.logger.error(`Response status: ${err.response?.status}`);
+        this.logger.error(`Config usada en la petición: ${JSON.stringify(err.config)}`);
         return of(null);
       }),
     ),
