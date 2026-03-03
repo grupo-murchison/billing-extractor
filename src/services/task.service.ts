@@ -180,18 +180,6 @@ export class TaskService {
   private mapProformaToSoftland(proforma: Proforma, tituloCsv: string) {
     let rutaBase = this.configService.get('URL_CSV_SOPORTE_PROFORMA');
 
-    this.logger.debug(
-      `Proforma completa:\n${JSON.stringify(proforma, null, 2)}`,
-    );
-
-    this.logger.debug(
-      `Conceptos:\n${JSON.stringify(
-        proforma.contratos?.[0]?.conceptos,
-        null,
-        2,
-      )}`,
-    );
-
     return {
       header: {
         numeroSecuencia: proforma.numeroSecuenciaCalculo,
