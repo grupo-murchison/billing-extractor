@@ -12,7 +12,7 @@ import { writeFileSync } from 'fs';
 export class DatabaseService {
   private readonly logger = new Logger(DatabaseService.name);
 
-  private baseUrl: string = this.configService.get('BS_BASE_URL');
+  private baseUrl: string;
 
   private axiosConfig: AxiosRequestConfig = {
     headers: { Authorization: `` },
@@ -25,27 +25,31 @@ export class DatabaseService {
   ) {
     const token = '';
     this.axiosConfig.headers = { Authorization: `Bearer ${token}` };
+    this.baseUrl = this.configService.get<string>('BS_BASE_URL');
+
+    if (!this.baseUrl) {
+      throw new Error('BS_BASE_URL no está definida');
+    }
   }
 
-  getProformaPendienteDeEnvio = async () => {
-    const url =
-      this.baseUrl + this.configService.get('BS_PROFORMA_PENDIENTE_DE_ENVIO');
+getProformaPendienteDeEnvio = async () => {
+  const path = this.configService.get<string>('BS_PROFORMA_PENDIENTE_DE_ENVIO');
+  const url = `${this.baseUrl}${path}`;
 
-    let config = { ...this.axiosConfig };
+  const config = { ...this.axiosConfig };
 
-    return lastValueFrom(
-      this.httpService.get(url, config).pipe(
-        map((axiosResponse: AxiosResponse) => {
-          return axiosResponse.data;
-        }),
-
-        catchError((err) => {
-          this.logger.error('->getProformaPendienteDeEnvio', err);
-          return of(null);
-        }),
-      ),
-    );
-  };
+  return lastValueFrom(
+    this.httpService.get(url, config).pipe(
+      map((axiosResponse: AxiosResponse) => {
+        return axiosResponse.data;
+      }),
+      catchError((err) => {
+        this.logger.error('Error en getProformaPendienteDeEnvio', err);
+        return of(null);
+      }),
+    ),
+  );
+};
 
   async updateEstadoProforma(data: any) {
     const url = this.baseUrl + this.configService.get('BS_UPDATE_ESTADO_PROFORMA');
