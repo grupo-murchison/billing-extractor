@@ -70,6 +70,8 @@ export class TaskService {
       const proforma = await this.getProformaPendiente();
       if (!proforma) return;
 
+      this.logger.log(`Procesando proforma (calculo_cabecera) ID=${proforma.id} - Secuencia=${proforma.numeroSecuenciaCalculo}`,);
+
       const payloadEnProceso = this.crearPayloadActualizacion(
         proforma,
         ProformaEstado.EN_PROCESO,
@@ -227,7 +229,7 @@ export class TaskService {
 
   private crearPayloadActualizacion(
     proforma: Proforma,
-    estado: string,
+    estado: ProformaEstado,
     tituloCsv?: string,
   ) {
     const payload: any = {
