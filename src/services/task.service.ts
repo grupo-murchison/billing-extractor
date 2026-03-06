@@ -59,12 +59,20 @@ export class TaskService {
     private configService: ConfigService,
   ) {}
 
+  // ------- Tareas CRON --------------
   @Cron('*/1 * * * *') // Ejecuta cada minuto
   async handleCron() {
     this.logger.debug(`Iniciado proceso billing-extractor (${new Date()})`);
     await this.processOneRow();
   }
 
+  @Cron('0 0 * * *')  
+  async handleCronGmbSocDim() {
+    this.logger.debug(`Iniciado proceso actualizacion sociedades-dimensiones-valores(${new Date()})`);
+    await this.syncDimensionesBillingService();
+  }
+ 
+  //----- Funciones --------------
   async processOneRow(): Promise<void> {
     try {
       const proforma = await this.getProformaPendiente();
@@ -255,6 +263,26 @@ export class TaskService {
     } catch (err) {
       this.logger.error('Error actualizando el estado de la proforma', err);
       throw err;
+    }
+  }
+
+  async syncDimensionesBillingService(): Promise<void> {
+    try {
+      const dimensiones = await this.softlandGatewayService.getDimensions();
+      if (dimensiones?.length) {
+        await this.databaseService.updateDimensiones(dimensiones);
+      }
+    } catch (err) {
+      this.logger.error('Error sincronizando dimensiones', err);
+    }
+
+    try {
+      const dimensionValores = await this.softlandGatewayService.getDimensionsValues();
+      if (dimensionValores?.length) {
+        await this.databaseService.updateDimensionValores(dimensionValores);
+      }
+    } catch (err) {
+      this.logger.error('Error sincronizando dimension-valores', err);
     }
   }
 }

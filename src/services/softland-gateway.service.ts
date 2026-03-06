@@ -55,4 +55,60 @@ export class SoftlandGatewayService {
       }
     }
   }
+
+  async getDimensions() {
+    const url = this.baseUrl + '/contenedores/sociedad-dimensiones/';
+    let config = { ...this.axiosConfig };
+    try {
+      const axiosResponse: AxiosResponse = await lastValueFrom(
+        this.httpService.get(url, config),
+      );
+      return axiosResponse.data;
+    } catch (err) {
+      this.logger.error('Error en la obtencion de dimensiones', err);
+
+    if (err.response && err.response.data) {
+        throw new BadRequestException({
+          message:
+            err.response.data.message ||
+            'Error desconocido en la obtencion de dimensiones',
+          error: 'Bad Request',
+          statusCode: 400,
+        });
+      } else {
+        throw new InternalServerErrorException(
+          'Error de conexión o de la base de datos',
+        );
+      }
+    }
+ }
+
+  async getDimensionsValues() {
+    const url = this.baseUrl + '/contenedores/sociedad-dimensiones-subcuentas/';
+    let config = { ...this.axiosConfig };
+    try {
+      const axiosResponse: AxiosResponse = await lastValueFrom(
+        this.httpService.get(url, config),
+      );
+      return axiosResponse.data;
+    } catch (err) {
+      this.logger.error('Error en la obtencion de dimensiones-valores', err);
+
+    if (err.response && err.response.data) {
+        throw new BadRequestException({
+          message:
+            err.response.data.message ||
+            'Error desconocido en la obtencion de dimensiones-valores',
+          error: 'Bad Request',
+          statusCode: 400,
+        });
+      } else {
+        throw new InternalServerErrorException(
+          'Error de conexión o de la base de datos',
+        );
+      }
+    }
+  }
+
+
 }

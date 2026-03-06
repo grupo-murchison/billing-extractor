@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Logger, Post, Version } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, HttpException, Logger, Post, Version } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { DatabaseService } from 'src/services/database.service';
 import { SoftlandGatewayService } from 'src/services/softland-gateway.service';
@@ -58,6 +58,20 @@ export class MainController {
         throw new BadRequestException('Hubo un problema procesando la proforma. Detalles: ' + err.message);
       }
   }
-}
+  }
+
+  @Post('/sync-dimensiones-billing')
+  @Version('1')
+  @ApiResponse({
+    status: 200,
+    description: 'Sincronización ejecutada correctamente',
+  })
+  @ApiResponse({ status: 500, description: 'Error', type: HttpException })
+  public async syncDimensionesBilling() {
+    await this.taskService.syncDimensionesBillingService();
+    return {
+      message: 'Proceso de sincronización ejecutado correctamente'
+    };
+  }
 }
 

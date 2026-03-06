@@ -101,5 +101,59 @@ getProformaPendienteDeEnvio = async () => {
     }
   }
 
+  async updateDimensiones(data: any ) {
+    const url = this.baseUrl + '/v1/dimension/sync' ;
+    let config = { ...this.axiosConfig };
 
+    try {
+      const axiosResponse: AxiosResponse = await lastValueFrom(
+        this.httpService.post(url, data, config),
+      );
+      return axiosResponse.data;
+    } catch (err) {
+      this.logger.error('Error en la actualización de dimensiones-billing', err);
+
+      if (err.response && err.response.data) {
+        throw new BadRequestException({
+          message:
+            err.response.data.message ||
+            'Error desconocido en la actualización de dimensiones-billing',
+          error: 'Bad Request',
+          statusCode: 400,
+        });
+      } else {
+        throw new InternalServerErrorException(
+          'Error de conexión o de la base de datos',
+        );
+      }
+    }
+  }
+
+  async updateDimensionValores(data: any ) {
+    const url = this.baseUrl + '/v1/dimension-valor/sync' ;
+    let config = { ...this.axiosConfig };
+
+    try {
+      const axiosResponse: AxiosResponse = await lastValueFrom(
+        this.httpService.post(url, data, config),
+      );
+      return axiosResponse.data;
+    } catch (err) {
+      this.logger.error('Error en la actualización de dimensiones-valor-billing', err);
+
+      if (err.response && err.response.data) {
+        throw new BadRequestException({
+          message:
+            err.response.data.message ||
+            'Error desconocido en la actualización de dimensiones-valor-billing',
+          error: 'Bad Request',
+          statusCode: 400,
+        });
+      } else {
+        throw new InternalServerErrorException(
+          'Error de conexión o de la base de datos',
+        );
+      }
+    }
+  }
 }
