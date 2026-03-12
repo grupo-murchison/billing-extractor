@@ -57,7 +57,7 @@ export class SoftlandGatewayService {
   }
 
   async getDimensions() {
-    const url = this.baseUrl + '/contenedores/sociedad-dimensiones/';
+    const url = this.baseUrl + '/sociedad-dimensiones/';
     let config = { ...this.axiosConfig };
     try {
       const axiosResponse: AxiosResponse = await lastValueFrom(
@@ -84,7 +84,7 @@ export class SoftlandGatewayService {
  }
 
   async getDimensionsValues() {
-    const url = this.baseUrl + '/contenedores/sociedad-dimensiones-subcuentas/';
+    const url = this.baseUrl + '/sociedad-dimensiones-subcuentas/';
     let config = { ...this.axiosConfig };
     try {
       const axiosResponse: AxiosResponse = await lastValueFrom(
